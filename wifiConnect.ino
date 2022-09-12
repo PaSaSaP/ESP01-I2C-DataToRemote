@@ -38,14 +38,17 @@ class WifiConnect {
 
     xDebugLn("sending...");
     String str = String(millis());
-    client.write((uint8_t const*)str.c_str(), str.length());
+    send(0xA2, (uint8_t const*)str.c_str(), str.length());
     delay(500);
   
     return true;
   }
 
-  size_t send(uint8_t const* arr, size_t size) {
-    return client.write(arr, size);
+  size_t send(uint32_t msgId, uint8_t const* arr, size_t size) {
+    auto result = client.write((uint8_t const*)&msgId, sizeof(msgId));
+    result += client.write((uint8_t const*)&size, sizeof(size));
+    result += client.write(arr, size);
+    return result;
   }
   
  private:
@@ -105,4 +108,6 @@ void wifiSetup() { wifiConnect.setup(); }
 
 bool wifiLoop() { return wifiConnect.loop(); }
 
-size_t wifiSend(uint8_t const* arr, size_t size) { return wifiConnect.send(arr, size); }
+size_t wifiSend(uint32_t msgId, uint8_t const* arr, size_t size) {
+  return wifiConnect.send(msgId, arr, size); 
+}

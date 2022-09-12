@@ -43,6 +43,6 @@ void loop() {
   if (lastIdx == 0) {
     return;
   }
-  wifiSend(buf, lastIdx + 1);
+  wifiSend(0xA1, buf, lastIdx + 1);
 }
 
