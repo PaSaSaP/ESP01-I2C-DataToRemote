@@ -45,8 +45,13 @@ class WifiConnect {
   }
 
   size_t send(uint32_t msgId, uint8_t const* arr, size_t size) {
-    auto result = client.write((uint8_t const*)&msgId, sizeof(msgId));
-    result += client.write((uint8_t const*)&size, sizeof(size));
+    struct {
+      uint32_t msgId;
+      uint32_t size;
+    } data;
+    data.msgId = msgId;
+    data.size = size;
+    auto result = client.write((uint8_t const*)&data, sizeof(data));
     result += client.write(arr, size);
     return result;
   }
